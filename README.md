@@ -40,3 +40,6 @@
   - `--data`: The training datasets. Available choices [WIKI, REDDIT, Flight, MovieLens, GDELT]
   - `--cache`: Enable GPU caching
   - `--cached_ratio`: Ratios of node features cached in GPU.
+
+## License
+TASER is MIT licensed, as found in the LICENSE file.
