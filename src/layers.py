@@ -91,6 +91,7 @@ class TransformerAggregator(torch.nn.Module):
         self.h_v = None
         self.h_exp_a = None
         self.h_neigh = None
+        self.h_att = None
 
         self.dim_node_feat = dim_node_feat
         self.dim_edge_feat = dim_edge_feat
@@ -131,17 +132,15 @@ class TransformerAggregator(torch.nn.Module):
         h_neigh_detach = self.h_neigh.detach()
         h_exp_a_detach = self.h_exp_a.detach()
         h_v_detach = self.h_v.detach()
+        h_att_detach = self.h_att.detach()
 
-        coef = (h_exp_a_detach.mean(dim=1)).pow(-3)
-        h_neigh = (log_prob * h_exp_a_detach * h_v_detach).mean(dim=1) + \
-                  h_neigh_detach * (log_prob * h_exp_a_detach).mean(dim=1)
-        h_neigh = coef * h_neigh
+        alpha, beta = 2, 1
+        coef = (h_exp_a_detach.mean(dim=1)).pow(-alpha)
+        h_neigh = h_att_detach * (h_v_detach + beta * h_neigh_detach.unsqueeze(1)) * log_prob
+        h_neigh = coef * h_neigh.sum(dim=1)
 
         batch_loss = torch.bmm(grad_h_neigh.view(grad_h_neigh.shape[0], 1, -1),
                                h_neigh.view(h_neigh.shape[0], -1, 1))
-        # batch_size = int(batch_loss.shape[0] / 6 / 3)
-        # idx = torch.cat([torch.arange(batch_size*2*5), torch.arange(batch_size*3*5, batch_size*3*5+batch_size*2)])
-        # batch_loss = batch_loss[idx]
         return batch_loss
 
     def forward(self, block):
@@ -179,6 +178,7 @@ class TransformerAggregator(torch.nn.Module):
         h_neigh = (h_v * h_att).sum(dim=1)
 
         if self.neigh_grad:
+            self.h_att = h_att
             self.h_neigh = h_neigh
             if self.training: self.h_neigh.retain_grad()
 
