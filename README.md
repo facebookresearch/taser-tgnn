@@ -3,7 +3,7 @@
 ## Setup
 1. Setup a Python environment (>=3.11). Install PyTorch (>=2.0.1) and Deep Graph Library (>=1.1).  
 
-2. Install nvcc for cuda compilation. Make sure choose the compatible cuda version with your PyTorch. 
+2. Install nvcc for cuda compilation. Make sure to choose the compatible cuda version with your PyTorch. 
     ```
         conda install cuda -c nvidia/label/cuda-11.8.0
     ```
