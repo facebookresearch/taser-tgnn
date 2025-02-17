@@ -15,7 +15,9 @@
     ```
 
 ## Download and Preprocess Dataset
-1. Download dataset
+1. Download datasets to the ```DATA/``` folder. 
+   
+   > **Note:** A preprocessed version of the datasets we used is available on [Google Drive](https://drive.google.com/drive/u/1/folders/1e_4rl9h5e7dkFwvwKFOP8HKDur9SZdzk). If you use this version, you can skip the preprocessing steps below.
 
 2. Convert edge CSV to the [Temporal-CSR](https://arxiv.org/abs/2203.14883) format
     ```
